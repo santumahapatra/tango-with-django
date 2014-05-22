@@ -10,6 +10,10 @@ def index(request):
 
   category_list = Category.objects.order_by('-name')[:5]
   context_dict = {'categories': category_list}
+
+  for category in category_list:
+    category.url = category.name.replace(' ', '_')
+
   return render_to_response('rango/index.html', context_dict, context)
 
 def category(request, category_name_url):
