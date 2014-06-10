@@ -15,6 +15,7 @@ def decode_url(str):
   return str.replace('_', ' ')
 
 def index(request):
+  request.session.set_test_cookie()
   context = RequestContext(request)
 
   category_list = Category.objects.order_by('-name')[:5]
@@ -61,6 +62,9 @@ def add_category(request):
   return render_to_response('rango/add_category.html', {'form': form}, context)
 
 def register(request):
+  if request.session.test_cookie_worked():
+    print ">>>>> TEST COOKIE WORKED!"
+    request.session.delete_test_cookie()
   context = RequestContext(request)
   registered = False
 
