@@ -43,7 +43,13 @@ def index(request):
 
 def about(request):
   context = RequestContext(request)
-  return render_to_response('rango/about.html', None, context)
+
+  if request.session.get('visits'):
+    count = request.session.get('visits')
+  else:
+    count = 0
+  
+  return render_to_response('rango/about.html', {'visits': count}, context)
 
 def category(request, category_name_url):
   context = RequestContext(request)
