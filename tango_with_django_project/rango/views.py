@@ -41,6 +41,10 @@ def index(request):
 
   return render_to_response('rango/index.html', context_dict, context)
 
+def about(request):
+  context = RequestContext(request)
+  return render_to_response('rango/about.html', None, context)
+
 def category(request, category_name_url):
   context = RequestContext(request)
 
