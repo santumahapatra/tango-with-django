@@ -4,6 +4,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 
 from rango.models import Category, Page
 from rango.forms import CategoryForm, UserForm, UserProfileForm, PageForm
@@ -15,7 +16,6 @@ def decode_url(str):
   return str.replace('_', ' ')
 
 def index(request):
-  request.session.set_test_cookie()
   context = RequestContext(request)
 
   category_list = Category.objects.order_by('-name')[:5]
@@ -24,7 +24,25 @@ def index(request):
   for category in category_list:
     category.url = category.name.replace(' ', '_')
 
-  return render_to_response('rango/index.html', context_dict, context)
+  page_list = Page.objects.order_by('-views')[:5]
+  context_dict['pages'] = page_list
+
+  response = render_to_response('rango/index.html', context_dict, context)
+
+  visits = int(request.COOKIES.get('visits', '0'))
+
+  if 'last_visit' in request.COOKIES:
+    last_visit = request.COOKIES['last_visit']
+    last_visit_time = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S")
+
+    if (datetime.now() - last_visit_time).days > 0:
+      response.set_cookie('visits', visits+1)
+      response.set_cookie('last_visit', datetime.now())
+
+  else:
+    response.set_cookie('last_visit', datetime.now())
+
+  return response
 
 def category(request, category_name_url):
   context = RequestContext(request)
@@ -62,9 +80,6 @@ def add_category(request):
   return render_to_response('rango/add_category.html', {'form': form}, context)
 
 def register(request):
-  if request.session.test_cookie_worked():
-    print ">>>>> TEST COOKIE WORKED!"
-    request.session.delete_test_cookie()
   context = RequestContext(request)
   registered = False
 
