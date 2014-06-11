@@ -5,15 +5,18 @@
 {% block title %}About Rango{% endblock %}
 
 {% block body_block %}
-  <h1>About Rango</h1>
 
-  <div> This is <strong>Rango's about page</strong>.<br /></div>
+  <div class="hero-unit">
+    <h1>About Rango</h1>
 
-  <div> You have visited the page {{ visits }} times. </div>
+    <div> This is <strong>Rango's about page</strong>.<br /></div>
 
-  <div><a href="/rango/">Click to return to the index page.</a><br />
-  Here's a picture of Rango!<br />
+    <div> You have visited the page {{ visits }} times. </div>
 
-  <img src="{% static "rango.jpg" %}" alt="Picture of Rango" />
+    <div><a href="/rango/">Click to return to the index page.</a><br />
+    Here's a picture of Rango!<br />
+
+    <img src="{% static "rango.jpg" %}" alt="Picture of Rango" />
+    </div>
   </div>
 {% endblock %}
