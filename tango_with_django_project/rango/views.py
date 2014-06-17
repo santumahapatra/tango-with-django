@@ -271,9 +271,5 @@ def suggest_category(request):
     starts_with = request.POST['suggestion']
 
   cat_list = get_category_list(8, starts_with)
-  print cat_list
-
-  for cat in cat_list:
-    print cat.name
-
+  
   return render_to_response('rango/category_list.html', {'cat_list': cat_list}, context)
