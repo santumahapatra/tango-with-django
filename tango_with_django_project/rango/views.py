@@ -15,11 +15,22 @@ def encode_url(str):
 def decode_url(str):
   return str.replace('_', ' ')
 
+def get_category_list():
+  cat_list = Category.objects.all()
+
+  for cat in cat_list:
+    cat.url = encode_url(cat.name)
+
+  return cat_list
+
 def index(request):
   context = RequestContext(request)
 
   category_list = Category.objects.order_by('-name')[:5]
   context_dict = {'categories': category_list}
+
+  cat_list = get_category_list()
+  context_dict['cat_list'] = cat_list
 
   for category in category_list:
     category.url = category.name.replace(' ', '_')
