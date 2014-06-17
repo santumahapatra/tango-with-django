@@ -8,4 +8,13 @@ $(document).ready(function() {
           $('#likes').hide();
         });
   });
+
+  $('#suggestion').keyup(function(){
+    var query;
+    query = $(this).val();
+    $.get('/rango/suggest_category/', {suggestion: query}, function(data){
+      console.log(data);
+      $('#cats').html(data);
+    });
+  });
 });

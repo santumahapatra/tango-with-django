@@ -16,8 +16,16 @@ def encode_url(str):
 def decode_url(str):
   return str.replace('_', ' ')
 
-def get_category_list():
-  cat_list = Category.objects.all()
+def get_category_list(max_results=0, starts_with=''):
+  cat_list = []
+  if starts_with:
+    cat_list = Category.objects.filter(name__startswith=starts_with)
+  else:
+    cat_list = Category.objects.all()
+
+  if max_results > 0:
+    if len(cat_list) > max_results:
+      cat_list = cat_list[:max_results]
 
   for cat in cat_list:
     cat.url = encode_url(cat.name)
@@ -55,13 +63,18 @@ def index(request):
 
 def about(request):
   context = RequestContext(request)
+  cat_list = get_category_list()
+  context_dict = {}
+  context_dict['cat_list'] = cat_list
 
   if request.session.get('visits'):
     count = request.session.get('visits')
   else:
     count = 0
+
+  context_dict['visits'] = count
   
-  return render_to_response('rango/about.html', {'visits': count}, context)
+  return render_to_response('rango/about.html', context_dict, context)
 
 def category(request, category_name_url):
   context = RequestContext(request)
@@ -247,3 +260,20 @@ def like_category(request):
       category.save()
 
   return HttpResponse(likes)
+
+def suggest_category(request):
+  context = RequestContext(request)
+  cat_list = []
+  starts_with = ''
+  if request.method == 'GET':
+    starts_with = request.GET['suggestion']
+  else:
+    starts_with = request.POST['suggestion']
+
+  cat_list = get_category_list(8, starts_with)
+  print cat_list
+
+  for cat in cat_list:
+    print cat.name
+
+  return render_to_response('rango/category_list.html', {'cat_list': cat_list}, context)

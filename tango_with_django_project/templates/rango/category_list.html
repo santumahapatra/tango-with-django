@@ -1,6 +1,6 @@
-<ul>
+<ul class="nav nav-list">
   {% if cat_list %}
-    {% for category in categories %}
+    {% for category in cat_list %}
       <li><a href="/rango/category/{{ category.url }}">{{ category.name }}</a></li>
     {% endfor %}
   {% else %}
