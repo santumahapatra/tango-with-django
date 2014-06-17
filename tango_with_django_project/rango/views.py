@@ -4,6 +4,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from datetime import datetime
 
 from rango.models import Category, Page
@@ -197,3 +198,19 @@ def add_page(request, category_name_url):
   return render_to_response( 'rango/add_page.html', 
     {'category_name_url': category_name_url, 'category_name': category_name, 'form': form}, 
     context)
+
+@login_required
+def profile(request):
+  context = RequestContext(request)
+  cat_list = get_category_list()
+  context_dict = {'cat_list': cat_list}
+  u = User.objects.get(username=request.user)
+
+  try:
+    up = UserProfile.objects.get(user=u)
+  except:
+    up = None
+
+  context_dict['user'] = u
+  context_dict['userprofile'] = up
+  return render_to_response('rango/profile.html', context_dict, context)
